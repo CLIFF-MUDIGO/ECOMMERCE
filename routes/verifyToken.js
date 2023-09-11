@@ -1,6 +1,5 @@
 const jwt = require("jsonwebtoken");
 
-
 const verifyToken = (req, res, next) => {
     const authHeader = req.headers.token;
     if (authHeader) {
@@ -14,16 +13,18 @@ const verifyToken = (req, res, next) => {
         return res.status(401).json("You are not authenticated!");
     }
 }
- 
-const verifyTokenAndAuthorization = (req,res,,next)=>{
-    verifyToken(req,res,()=>{
-        if(req.user_id == req.params.id || req.user.isAdmin){
+
+const verifyTokenAndAuthorization = (req, res, next) => { // Remove the extra comma here
+    verifyToken(req, res, () => {
+        if (req.user_id == req.params.id || req.user.isAdmin) {
             next();
-        }else{
-            res.status(403).json("You are not alowed to do that!");
+        } else {
+            res.status(403).json("You are not allowed to do that!");
         }
-    })
+    });
 }
-module.export = {
-    verifyToken,verifyTokenAndAuthorization
+
+module.exports = {
+    verifyToken,
+    verifyTokenAndAuthorization
 };
