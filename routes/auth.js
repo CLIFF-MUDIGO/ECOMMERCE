@@ -35,13 +35,20 @@ router.post("/login", async (req, res) => {
     const hashPassword = CryptoJS.AES.decrypt(
       user.password, process.env.PASS_SEC
     );
-    const password = hashPassword.toString(CryptoJS.enc.Utf8);
+    const OriginalPassword = hashPassword.toString(CryptoJS.enc.Utf8);
 
-    if (password !== req.body.password) {
+    if (OriginalPassword !== req.body.password) {
       return res.status(401).json("Wrong Credentials");
     }
+     const accessToken = jwt.sign(
+                {
+         id:user._id, isAdmin:user.isAdmin,
+      }, process.env.JWT_SEC,
+      {expiresIn:"100d"}
+      )
 
-    res.status(200).json(user);
+       const {password, ...others} = user._doc;
+    res.status(200).json({...others, accessToken});
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Internal server error" });
